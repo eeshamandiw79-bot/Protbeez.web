@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Protbeez | Ultimate Minecraft PvP Hub</title>
+    <!-- Google Fonts for Ultra-Clear & Sharp Typography -->
+    <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@400;600;800&family=Montserrat:wght@500;700;900&display=swap" rel="stylesheet">
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --bg-color: #000000;
+            --card-bg: #0f172a;
+            --text-color: #f8fafc;
+            --accent-color: #0061ff;
+            --accent-hover: #1d4ed8;
+            --border-color: #1e3a8a;
+            --nav-bg: rgba(15, 23, 42, 0.9);
+        }
+
+        [data-theme="light"] {
+            --bg-color: #f1f5f9;
+            --card-bg: #ffffff;
+            --text-color: #0f172a;
+            --accent-color: #2563eb;
+            --accent-hover: #1e40af;
+            --border-color: #93c5fd;
+            --nav-bg: rgba(255, 255, 255, 0.9);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            scroll-behavior: smooth;
+            transition: background 0.3s ease, color 0.3s ease;
+        }
+
+        body {
+            font-family: 'Kanit', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* Particle Canvas Background (Masso / Combat particle vibe) */
+        #particle-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .wrapper {
+            position: relative;
+            z-index: 2;
+        }
+
+        /* Navigation Bar */
+        nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            background: var(--nav-bg);
+            backdrop-filter: blur(10px);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 5%;
+            z-index: 100;
+            border-bottom: 2px solid var(--border-color);
+        }
+
+        .logo {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 900;
+            font-size: 2.2rem;
+            color: var(--accent-color);
+            letter-spacing: 2px;
+            text-shadow: 2px 2px 0px #000;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 25px;
+            list-style: none;
+            align-items: center;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: var(--text-color);
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+
+        .nav-links a:hover {
+            color: var(--accent-color);
+        }
+
+        .theme-btn {
+            background: var(--card-bg);
+            border: 2px solid var(--accent-color);
+            color: var(--text-color);
+            padding: 8px 16px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .theme-btn:hover {
+            background: var(--accent-color);
+            color: #fff;
+        }
+
+        /* Container Layout */
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Hero Section */
+        header.hero {
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding-top: 60px;
+        }
+
+        .hero h1 {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 900;
+            font-size: 4.2rem;
+            color: var(--accent-color);
+            margin-bottom: 10px;
+            letter-spacing: 2px;
+            text-shadow: 3px 3px 0px rgba(0,0,0,0.4);
+        }
+
+        .hero .subtitle {
+            font-family: 'Kanit', sans-serif;
+            font-weight: 800;
+            font-size: 1.6rem;
+            color: #ef4444;
+            margin-bottom: 15px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .hero p {
+            font-size: 1.15rem;
+            max-width: 700px;
+            margin-bottom: 30px;
+            opacity: 0.95;
+            font-weight: 400;
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .btn {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 14px 28px;
+            font-size: 1.1rem;
+            font-weight: 700;
+            text-decoration: none;
+            border-radius: 12px;
+            color: #fff;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            transition: transform 0.2s, background 0.2s;
+        }
+
+        .btn:hover {
+            transform: translateY(-4px);
+        }
+
+        .btn-youtube { background-color: #ef4444; }
+        .btn-youtube:hover { background-color: #dc2626; }
+        .btn-discord { background-color: #5865F2; }
+        .btn-discord:hover { background-color: #4752c4; }
+
+        /* General Section Styling */
+        section {
+            padding: 90px 0;
+        }
+
+        .section-title {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 900;
+            font-size: 2.8rem;
+            text-align: center;
+            color: var(--accent-color);
+            margin-bottom: 50px;
+            letter-spacing: 1px;
+            text-shadow: 2px 2px 0px rgba(0,0,0,0.3);
+            text-transform: uppercase;
+        }
+
+        /* About Section */
+        .about-card {
+            background: var(--card-bg);
+            border: 3px dashed var(--border-color);
+            border-radius: 20px;
+            padding: 40px;
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 30px;
+            align-items: center;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        .about-img {
+            text-align: center;
+            font-size: 7.5rem;
+            color: var(--accent-color);
+        }
+
+        .about-content h3 {
+            font-size: 1.8rem;
+            margin-bottom: 15px;
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 700;
+            color: var(--accent-color);
+        }
+
+        .about-content p {
+            line-height: 1.7;
+            opacity: 0.9;
+            margin-bottom: 15px;
+        }
+
+        /* PvP Skills / Features Grid */
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+        }
+
+        .feature-card {
+            background: var(--card-bg);
+            border: 2px solid var(--border-color);
+            border-radius: 16px;
+            padding: 30px;
+            text-align: center;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+            transition: transform 0.3s;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--accent-color);
+        }
+
+        .feature-card i {
+            font-size: 3rem;
+            color: var(--accent-color);
+            margin-bottom: 20px;
+        }
+
+        .feature-card h3 {
+            font-size: 1.4rem;
+            margin-bottom: 12px;
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 700;
+        }
+
+        .feature-card p {
+            font-size: 0.95rem;
+            line-height: 1.6;
+            opacity: 0.85;
+        }
+
+        /* Footer */
+        footer {
+            text-align: center;
+            padding: 30px;
+            font-size: 1rem;
+            font-weight: 600;
+            border-top: 1px solid var(--border-color);
+            background: var(--card-bg);
+            margin-top: 50px;
+        }
+
+        footer span {
+            color: var(--accent-color);
+        }
+
+        /* Responsive Design */
+        @media(max-width: 768px) {
+            .about-card {
+                grid-template-columns: 1fr;
+                text-align: center;
+            }
+            .hero h1 {
+                font-size: 3rem;
+            }
+            .nav-links {
+                display: none; 
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Particle Background Canvas (Masso / Combat particle vibe) -->
+    <canvas id="particle-canvas"></canvas>
+
+    <div class="wrapper">
+        <!-- Navigation -->
+        <nav>
+            <div class="logo">Protbeez</div>
+            <ul class="nav-links">
+                <li><a href="#home">Home</a></li>
+                <li><a href="#about">About</a></li>
+                <li><a href="#pvp-skills">PvP Skills</a></li>
+                <li>
+                    <button class="theme-btn" onclick="toggleTheme()">
+                        <i class="fa-solid fa-moon" id="themeIcon"></i> <span id="themeText">Dark</span>
+                    </button>
+                </li>
+            </ul>
+        </nav>
+
+        <!-- Hero Section -->
+        <header id="home" class="hero container">
+            <h1>PROTBEEZ PVP ARENA</h1>
+            <div class="subtitle">⚡ Ultimate Minecraft PvP Master ⚡</div>
+            <p>Welcome to the combat zone! High-tier combos, crystal fights, netherite showdowns, and epic tournament highlights.</p>
+            <div class="btn-group">
+                <a href="https://www.youtube.com/@Protbeez-h7x" target="_blank" class="btn btn-youtube">
+                    <i class="fa-brands fa-youtube fa-lg"></i> Watch My Channel
+                </a>
+                <a href="https://discord.gg/TvcfHK4w7" target="_blank" class="btn btn-discord">
+                    <i class="fa-brands fa-discord fa-lg"></i> Join My Discord Server
+                </a>
+            </div>
+        </header>
+
+        <!-- About Section -->
+        <section id="about" class="container">
+            <h2 class="section-title">WHO IS PROTBEEZ?</h2>
+            <div class="about-card">
+                <div class="about-img">
+                    <i class="fa-solid fa-shield-halved"></i>
+                </div>
+                <div class="about-content">
+                    <h3>Unstoppable Crystal Pvp Legend</h3>
+                    <p>Protbeez is an elite Minecraft PvP content creator known for crystal pvp incredible combo hits, and dominating enemy squads in hardcore battles.</p>
+                    <p>Whether it's SMP wars, practice server duels, or 1v1 showdowns, you will find master-level gameplay and pro tips right here!</p>
+                    <a href="https://www.youtube.com/@Protbeez-h7x" target="_blank" class="btn btn-youtube" style="display:inline-flex; margin-top:10px;">
+                        Visit Protbeez Channel
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <!-- PvP Skills Section -->
+        <section id="pvp-skills" class="container">
+            <h2 class="section-title">COMBAT SKILLS</h2>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <i class="fa-solid fa-bolt"></i>
+                    <h3>Insane Combos</h3>
+                    <p>Executing continuous hit chains with high CPS and master spacing to completely overwhelm opponents.</p>
+                </div>
+                <div class="feature-card">
+                    <i class="fa-solid fa-fire"></i>
+                    <h3>Crystal PvP</h3>
+                    <p>Expert anchor and end crystal detonation timings combined with lightning-fast shield and sword swaps.</p>
+                </div>
+                <div class="feature-card">
+                    <i class="fa-solid fa-hand-fist"></i>
+                    <h3>Reflex & Aim</h3>
+                    <p>Pinpoint bow shots, rod spacing tricks, and quick-thinking maneuvers in high-pressure team fights.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer>
+            Made by <span> Emereld Paw</span> | All Rights Reserved © 2026 Emereld Paw
+        </footer>
+    </div>
+
+    <!-- Script for Theme & Particles -->
+    <script>
+        function toggleTheme() {
+            const html = document.documentElement;
+            const themeIcon = document.getElementById('themeIcon');
+            const themeText = document.getElementById('themeText');
+
+            if (html.getAttribute('data-theme') === 'dark') {
+                html.setAttribute('data-theme', 'light');
+                themeIcon.className = 'fa-solid fa-sun';
+                themeText.innerText = 'Light';
+            } else {
+                html.setAttribute('data-theme', 'dark');
+                themeIcon.className = 'fa-solid fa-moon';
+                themeText.innerText = 'Dark';
+            }
+        }
+
+        // Particle Canvas Animation (Masso / Combat particle vibe)
+        const canvas = document.getElementById('particle-canvas');
+        const ctx = canvas.getContext('2d');
+
+        let width = canvas.width = window.innerWidth;
+        let height = canvas.height = window.innerHeight;
+
+        window.addEventListener('resize', () => {
+            width = canvas.width = window.innerWidth;
+            height = canvas.height = window.innerHeight;
+        });
+
+        const particles = [];
+        for (let i = 0; i < 45; i++) {
+            particles.push({
+                x: Math.random() * width,
+                y: Math.random() * height,
+                size: Math.random() * 2.8 + 1,
+                speedX: (Math.random() - 0.5) * 1.5,
+                speedY: (Math.random() - 0.5) * 1.5,
+                angle: Math.random() * 360
+            });
+        }
+
+        function animateParticles() {
+            ctx.clearRect(0, 0, width, height);
+
+            const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+            ctx.fillStyle = isDark ? 'rgba(59, 130, 246, 0.35)' : 'rgba(37, 99, 235, 0.25)';
+
+            particles.forEach(p => {
+                p.x += p.speedX + Math.sin(p.angle) * 0.5;
+                p.y += p.speedY + Math.cos(p.angle) * 0.5;
+                p.angle += 0.05;
+
+                if (p.x < 0) p.x = width;
+                if (p.x > width) p.x = 0;
+                if (p.y < 0) p.y = height;
+                if (p.y > height) p.y = 0;
+
+                ctx.beginPath();
+                ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+                ctx.fill();
+            });
+
+            requestAnimationFrame(animateParticles);
+        }
+
+        animateParticles();
+    </script>
+</body>
+</html>
